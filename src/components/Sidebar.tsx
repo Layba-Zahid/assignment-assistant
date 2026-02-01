@@ -1,5 +1,4 @@
 import { LayoutDashboard, Users, Settings, ChevronLeft, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -19,66 +18,91 @@ const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm lg:hidden"
           onClick={onToggle}
         />
       )}
 
+      {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 h-full bg-sidebar text-sidebar-foreground sidebar-transition",
-          "md:relative md:translate-x-0",
-          isOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full md:w-20"
+          "fixed lg:sticky top-0 left-0 z-50 lg:z-0 h-screen bg-sidebar text-sidebar-foreground flex flex-col transition-all duration-300 ease-in-out",
+          isOpen 
+            ? "w-64 translate-x-0" 
+            : "w-64 -translate-x-full lg:w-16 lg:translate-x-0"
         )}
       >
-        <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
-          <div className={cn("flex items-center gap-3", !isOpen && "md:justify-center md:w-full")}>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-primary">
-              <Users className="h-5 w-5 text-sidebar-primary-foreground" />
+        {/* Header */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border shrink-0">
+          <div className={cn(
+            "flex items-center gap-3 overflow-hidden",
+            !isOpen && "lg:justify-center lg:w-full"
+          )}>
+            <div className="h-8 w-8 shrink-0 rounded-lg bg-sidebar-primary flex items-center justify-center">
+              <Users className="h-4 w-4 text-sidebar-primary-foreground" />
             </div>
-            <span className={cn("font-semibold text-lg", !isOpen && "md:hidden")}>
+            <span className={cn(
+              "font-semibold text-base whitespace-nowrap transition-opacity duration-200",
+              !isOpen && "lg:opacity-0 lg:w-0"
+            )}>
               UMD
             </span>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
+          <button
             onClick={onToggle}
-            className="hidden md:flex text-sidebar-foreground hover:bg-sidebar-accent"
+            className={cn(
+              "hidden lg:flex h-8 w-8 items-center justify-center rounded-md hover:bg-sidebar-accent transition-colors shrink-0",
+              !isOpen && "lg:hidden"
+            )}
           >
-            <ChevronLeft className={cn("h-5 w-5 transition-transform", !isOpen && "rotate-180")} />
-          </Button>
+            <ChevronLeft className="h-4 w-4" />
+          </button>
         </div>
 
-        <nav className="flex flex-col gap-1 p-3">
-          {menuItems.map((item) => (
-            <a
-              key={item.label}
-              href="#"
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                item.active
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
-                !isOpen && "md:justify-center md:px-2"
-              )}
-            >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
-              <span className={cn(!isOpen && "md:hidden")}>{item.label}</span>
-            </a>
-          ))}
+        {/* Navigation */}
+        <nav className="flex-1 py-4 px-3 overflow-y-auto">
+          <ul className="space-y-1">
+            {menuItems.map((item) => (
+              <li key={item.label}>
+                <a
+                  href="#"
+                  className={cn(
+                    "flex items-center gap-3 h-10 px-3 rounded-lg text-sm font-medium transition-colors",
+                    item.active
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                    !isOpen && "lg:justify-center lg:px-0"
+                  )}
+                >
+                  <item.icon className="h-5 w-5 shrink-0" />
+                  <span className={cn(
+                    "whitespace-nowrap transition-opacity duration-200",
+                    !isOpen && "lg:hidden"
+                  )}>
+                    {item.label}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </nav>
 
-        <div className="absolute bottom-4 left-0 right-0 px-3">
+        {/* Footer */}
+        <div className="p-3 border-t border-sidebar-border shrink-0">
           <a
             href="#"
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors",
-              !isOpen && "md:justify-center md:px-2"
+              "flex items-center gap-3 h-10 px-3 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors",
+              !isOpen && "lg:justify-center lg:px-0"
             )}
           >
-            <LogOut className="h-5 w-5 flex-shrink-0" />
-            <span className={cn(!isOpen && "md:hidden")}>Logout</span>
+            <LogOut className="h-5 w-5 shrink-0" />
+            <span className={cn(
+              "whitespace-nowrap transition-opacity duration-200",
+              !isOpen && "lg:hidden"
+            )}>
+              Logout
+            </span>
           </a>
         </div>
       </aside>
