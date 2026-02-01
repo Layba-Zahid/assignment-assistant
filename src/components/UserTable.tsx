@@ -1,13 +1,5 @@
-import { Trash2, Mail } from "lucide-react";
+import { Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
 export interface User {
@@ -22,28 +14,26 @@ interface UserTableProps {
   onDeleteUser: (id: number) => void;
 }
 
-const getRoleBadgeVariant = (role: string) => {
+const getRoleBadgeVariant = (role: string): "default" | "secondary" | "outline" => {
   switch (role.toLowerCase()) {
     case "admin":
       return "default";
     case "editor":
       return "secondary";
-    case "viewer":
-      return "outline";
     default:
-      return "secondary";
+      return "outline";
   }
 };
 
 const UserTable = ({ users, onDeleteUser }: UserTableProps) => {
   if (users.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="rounded-full bg-muted p-4 mb-4">
-          <Mail className="h-8 w-8 text-muted-foreground" />
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+          <Users className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium text-foreground mb-1">No users found</h3>
-        <p className="text-sm text-muted-foreground">
+        <h3 className="text-base font-medium text-foreground mb-1">No users found</h3>
+        <p className="text-sm text-muted-foreground max-w-xs">
           Add your first user by clicking the "Add User" button above.
         </p>
       </div>
@@ -51,44 +41,46 @@ const UserTable = ({ users, onDeleteUser }: UserTableProps) => {
   }
 
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-muted/50 hover:bg-muted/50">
-            <TableHead className="font-semibold">ID</TableHead>
-            <TableHead className="font-semibold">Name</TableHead>
-            <TableHead className="font-semibold">Email</TableHead>
-            <TableHead className="font-semibold">Role</TableHead>
-            <TableHead className="font-semibold text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-border">
+            <th className="h-12 px-4 text-left text-sm font-semibold text-foreground">ID</th>
+            <th className="h-12 px-4 text-left text-sm font-semibold text-foreground">Name</th>
+            <th className="h-12 px-4 text-left text-sm font-semibold text-foreground hidden sm:table-cell">Email</th>
+            <th className="h-12 px-4 text-left text-sm font-semibold text-foreground">Role</th>
+            <th className="h-12 px-4 text-right text-sm font-semibold text-foreground">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
           {users.map((user) => (
-            <TableRow key={user.id} className="table-row-hover">
-              <TableCell className="font-medium text-muted-foreground">
-                #{user.id}
-              </TableCell>
-              <TableCell className="font-medium">{user.name}</TableCell>
-              <TableCell className="text-muted-foreground">{user.email}</TableCell>
-              <TableCell>
-                <Badge variant={getRoleBadgeVariant(user.role)}>
-                  {user.role}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right">
+            <tr 
+              key={user.id} 
+              className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors"
+            >
+              <td className="h-14 px-4 text-sm text-muted-foreground">#{user.id}</td>
+              <td className="h-14 px-4">
+                <span className="text-sm font-medium text-foreground">{user.name}</span>
+                <span className="block text-xs text-muted-foreground sm:hidden">{user.email}</span>
+              </td>
+              <td className="h-14 px-4 text-sm text-muted-foreground hidden sm:table-cell">{user.email}</td>
+              <td className="h-14 px-4">
+                <Badge variant={getRoleBadgeVariant(user.role)}>{user.role}</Badge>
+              </td>
+              <td className="h-14 px-4 text-right">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => onDeleteUser(user.id)}
-                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
-              </TableCell>
-            </TableRow>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
     </div>
   );
 };
