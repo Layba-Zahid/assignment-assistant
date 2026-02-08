@@ -1,5 +1,6 @@
 import { LayoutDashboard, Users, Settings, ChevronLeft, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link, useLocation } from "react-router-dom";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -7,12 +8,14 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: false },
-  { icon: Users, label: "Users", active: true },
-  { icon: Settings, label: "Settings", active: false },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+  { icon: Users, label: "Users", href: "/" },
+  { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
 const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
+  const location = useLocation();
+
   return (
     <>
       {/* Mobile overlay */}
@@ -62,28 +65,31 @@ const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
         {/* Navigation */}
         <nav className="flex-1 py-4 px-3 overflow-y-auto">
           <ul className="space-y-1">
-            {menuItems.map((item) => (
-              <li key={item.label}>
-                <a
-                  href="#"
-                  className={cn(
-                    "flex items-center gap-3 h-10 px-3 rounded-lg text-sm font-medium transition-colors",
-                    item.active
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
-                    !isOpen && "lg:justify-center lg:px-0"
-                  )}
-                >
-                  <item.icon className="h-5 w-5 shrink-0" />
-                  <span className={cn(
-                    "whitespace-nowrap transition-opacity duration-200",
-                    !isOpen && "lg:hidden"
-                  )}>
-                    {item.label}
-                  </span>
-                </a>
-              </li>
-            ))}
+            {menuItems.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <li key={item.label}>
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "flex items-center gap-3 h-10 px-3 rounded-lg text-sm font-medium transition-colors",
+                      isActive
+                        ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                      !isOpen && "lg:justify-center lg:px-0"
+                    )}
+                  >
+                    <item.icon className="h-5 w-5 shrink-0" />
+                    <span className={cn(
+                      "whitespace-nowrap transition-opacity duration-200",
+                      !isOpen && "lg:hidden"
+                    )}>
+                      {item.label}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
